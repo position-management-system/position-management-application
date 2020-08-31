@@ -38,6 +38,9 @@
     "enableTranslation": true,
     "nativeLanguage": "en",
     "languages": ["en", "zh-cn", "fr", "ru", "es"],
-    "blueprints": []
+    "blueprints": [],
+    "herokuAppName": "position-management-app",
+    "herokuDeployType": "git",
+    "herokuJavaVersion": "11"
   }
 }
