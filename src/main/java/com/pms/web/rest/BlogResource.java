@@ -1,7 +1,9 @@
 package com.pms.web.rest;
 
 import com.pms.domain.Blog;
+import com.pms.domain.User;
 import com.pms.repository.BlogRepository;
+import com.pms.repository.UserRepository;
 import com.pms.security.SecurityUtils;
 import com.pms.web.rest.errors.BadRequestAlertException;
 import io.github.jhipster.web.util.HeaderUtil;
@@ -36,9 +38,11 @@ public class BlogResource {
     private String applicationName;
 
     private final BlogRepository blogRepository;
+    private final UserRepository userRepository;
 
-    public BlogResource(BlogRepository blogRepository) {
+    public BlogResource(BlogRepository blogRepository, UserRepository userRepository) {
         this.blogRepository = blogRepository;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -54,7 +58,7 @@ public class BlogResource {
         if (blog.getId() != null) {
             throw new BadRequestAlertException("A new blog cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        if (!blog.getUser().getLogin().equals(SecurityUtils.getCurrentUserLogin().orElse(""))) {
+        if (!validBlogUser(blog)) {
             return new ResponseEntity<>("error.http.403", HttpStatus.FORBIDDEN);
         }
         Blog result = blogRepository.save(blog);
@@ -77,8 +81,7 @@ public class BlogResource {
         if (blog.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (blog.getUser() != null &&
-            !blog.getUser().getLogin().equals(SecurityUtils.getCurrentUserLogin().orElse(""))) {
+        if (!validBlogUser(blog)) {
             return new ResponseEntity<>("error.http.403", HttpStatus.FORBIDDEN);
         }
         Blog result = blogRepository.save(blog);
@@ -135,5 +138,16 @@ public class BlogResource {
 
     private Optional<Blog> getBlogById(Long id) {
         return blogRepository.findById(id);
+    }
+
+    private boolean validBlogUser(@RequestBody @Valid Blog blog) {
+        Long userId;
+        if ((userId = blog.getUser().getId()) != null) {
+            User user = userRepository.getOne(userId);
+            if (user.getLogin().equals(SecurityUtils.getCurrentUserLogin().orElse(""))) {
+                return true;
+            }
+        }
+        return false;
     }
 }

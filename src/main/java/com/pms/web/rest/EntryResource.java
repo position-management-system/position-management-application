@@ -1,7 +1,10 @@
 package com.pms.web.rest;
 
+import com.pms.domain.Blog;
 import com.pms.domain.Entry;
+import com.pms.domain.User;
 import com.pms.repository.EntryRepository;
+import com.pms.repository.UserRepository;
 import com.pms.security.SecurityUtils;
 import com.pms.web.rest.errors.BadRequestAlertException;
 
@@ -42,9 +45,11 @@ public class EntryResource {
     private String applicationName;
 
     private final EntryRepository entryRepository;
+    private final UserRepository userRepository;
 
-    public EntryResource(EntryRepository entryRepository) {
+    public EntryResource(EntryRepository entryRepository, UserRepository userRepository) {
         this.entryRepository = entryRepository;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -61,9 +66,8 @@ public class EntryResource {
             throw new BadRequestAlertException("A new entry cannot already have an ID", ENTITY_NAME, "idexists");
         }
         Entry result = entryRepository.save(entry);
-        if (entry.getBlog() != null &&
-            !entry.getBlog().getUser().getLogin().equals(SecurityUtils.getCurrentUserLogin().orElse(""))) {
-            return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);
+        if (!validEntryUser(entry)) {
+            new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);
         }
         return ResponseEntity.created(new URI("/api/entries/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
@@ -85,9 +89,8 @@ public class EntryResource {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         Entry result = entryRepository.save(entry);
-        if (entry.getBlog() != null &&
-            !entry.getBlog().getUser().getLogin().equals(SecurityUtils.getCurrentUserLogin().orElse(""))) {
-            return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);
+        if (!validEntryUser(entry)) {
+            new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);
         }
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, entry.getId().toString()))
@@ -147,5 +150,19 @@ public class EntryResource {
 
     private Optional<Entry> getOneEntryWithEagerRelationships(Long id) {
         return entryRepository.findOneWithEagerRelationships(id);
+    }
+
+    private boolean validEntryUser(@RequestBody @Valid Entry entry) {
+        Blog blog;
+        if ((blog = entry.getBlog()) != null) {
+            Long userId;
+            if ((userId = blog.getUser().getId()) != null) {
+                User user = userRepository.getOne(userId);
+                if (user.getLogin().equals(SecurityUtils.getCurrentUserLogin().orElse(""))) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
