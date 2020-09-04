@@ -22,4 +22,18 @@ relationship ManyToMany {
   Entry{tag(name)} to Tag{entry}
 }
 
+entity Trade {
+  uniqueTag String required,
+  tradeDate LocalDate required,
+  side String required,
+  quantity Integer required,
+  productId String required,
+  price BigDecimal required,
+  currency String required,
+  executionTime Instant required,
+  primaryAccount String required,
+  versusAccount String required,
+  trader String required,
+}
+
 paginate Entry, Tag with infinite-scroll

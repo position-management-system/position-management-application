@@ -24,6 +24,10 @@ import entry, {
 import tag, {
   TagState
 } from 'app/entities/tag/tag.reducer';
+// prettier-ignore
+import trade, {
+  TradeState
+} from 'app/entities/trade/trade.reducer';
 /* jhipster-needle-add-reducer-import - JHipster will add reducer here */
 
 export interface IRootState {
@@ -40,6 +44,7 @@ export interface IRootState {
   readonly blog: BlogState;
   readonly entry: EntryState;
   readonly tag: TagState;
+  readonly trade: TradeState;
   /* jhipster-needle-add-reducer-type - JHipster will add reducer type here */
   readonly loadingBar: any;
 }
@@ -58,6 +63,7 @@ const rootReducer = combineReducers<IRootState>({
   blog,
   entry,
   tag,
+  trade,
   /* jhipster-needle-add-reducer-combine - JHipster will add reducer here */
   loadingBar,
 });

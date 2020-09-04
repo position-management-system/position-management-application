@@ -17,6 +17,7 @@
     <include file="config/liquibase/changelog/20200831111319_added_entity_Blog.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20200831111419_added_entity_Entry.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20200831111519_added_entity_Tag.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20200904204446_added_entity_Trade.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <include file="config/liquibase/changelog/20200831111319_added_entity_constraints_Blog.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20200831111419_added_entity_constraints_Entry.xml" relativeToChangelogFile="false"/>

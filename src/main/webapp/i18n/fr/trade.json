@@ -1,0 +1,32 @@
+{
+  "positionApp": {
+    "trade": {
+      "home": {
+        "title": "Trades",
+        "createLabel": "Créer un nouveau Trade",
+        "createOrEditLabel": "Créer ou éditer un Trade",
+        "notFound": "Aucun Trade trouvé"
+      },
+      "created": "Un nouveau Trade a été créé avec l'identifiant {{ param }}",
+      "updated": "Le Trade avec l'identifiant {{ param }} a été mis à jour",
+      "deleted": "Le Trade avec l'identifiant {{ param }} a été supprimé",
+      "delete": {
+        "question": "Etes-vous certain de vouloir supprimer le Trade {{ id }} ?"
+      },
+      "detail": {
+        "title": "Trade"
+      },
+      "uniqueTag": "Unique Tag",
+      "tradeDate": "Trade Date",
+      "side": "Side",
+      "quantity": "Quantity",
+      "productId": "Product Id",
+      "price": "Price",
+      "currency": "Currency",
+      "executionTime": "Execution Time",
+      "primaryAccount": "Primary Account",
+      "versusAccount": "Versus Account",
+      "trader": "Trader"
+    }
+  }
+}

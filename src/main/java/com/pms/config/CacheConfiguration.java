@@ -53,6 +53,7 @@ public class CacheConfiguration {
             createCache(cm, com.pms.domain.Entry.class.getName() + ".tags");
             createCache(cm, com.pms.domain.Tag.class.getName());
             createCache(cm, com.pms.domain.Tag.class.getName() + ".entries");
+            createCache(cm, com.pms.domain.Trade.class.getName());
             // jhipster-needle-ehcache-add-entry
         };
     }

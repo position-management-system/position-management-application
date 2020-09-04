@@ -1,0 +1,32 @@
+{
+  "positionApp": {
+    "trade": {
+      "home": {
+        "title": "Trades",
+        "createLabel": "Создать новый Trade",
+        "createOrEditLabel": "Создать или отредактировать Trade",
+        "notFound": "No Trades found"
+      },
+      "created": "Новый Trade создан с идентификатором {{ param }}",
+      "updated": "Trade обновлен с идентификатором {{ param }}",
+      "deleted": "Trade удален с идентификатором {{ param }}",
+      "delete": {
+        "question": "Вы уверены что хотите удалить Trade {{ id }}?"
+      },
+      "detail": {
+        "title": "Trade"
+      },
+      "uniqueTag": "Unique Tag",
+      "tradeDate": "Trade Date",
+      "side": "Side",
+      "quantity": "Quantity",
+      "productId": "Product Id",
+      "price": "Price",
+      "currency": "Currency",
+      "executionTime": "Execution Time",
+      "primaryAccount": "Primary Account",
+      "versusAccount": "Versus Account",
+      "trader": "Trader"
+    }
+  }
+}

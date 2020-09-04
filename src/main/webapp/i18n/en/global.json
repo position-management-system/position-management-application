@@ -10,6 +10,7 @@
         "blog": "Blog",
         "entry": "Entry",
         "tag": "Tag",
+        "trade": "Trade",
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
       },
       "account": {
