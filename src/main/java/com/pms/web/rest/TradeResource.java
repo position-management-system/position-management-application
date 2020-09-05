@@ -2,12 +2,13 @@ package com.pms.web.rest;
 
 import com.pms.domain.Trade;
 import com.pms.repository.TradeRepository;
+import com.pms.service.PositionService;
 import com.pms.web.rest.errors.BadRequestAlertException;
-
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,6 +37,9 @@ public class TradeResource {
 
     private final TradeRepository tradeRepository;
 
+    @Autowired
+    private PositionService positionService;
+
     public TradeResource(TradeRepository tradeRepository) {
         this.tradeRepository = tradeRepository;
     }
@@ -54,6 +58,9 @@ public class TradeResource {
             throw new BadRequestAlertException("A new trade cannot already have an ID", ENTITY_NAME, "idexists");
         }
         Trade result = tradeRepository.save(trade);
+
+        positionService.updatePosition(trade);
+
         return ResponseEntity.created(new URI("/api/trades/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
             .body(result);

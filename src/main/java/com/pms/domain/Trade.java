@@ -257,4 +257,12 @@ public class Trade implements Serializable {
             ", trader='" + getTrader() + "'" +
             "}";
     }
+
+    public Integer getSignedQuantity() {
+        if (side.equals("Buy")) {
+            return quantity;
+        } else {
+            return -quantity;
+        }
+    }
 }
