@@ -11,7 +11,9 @@ import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -46,6 +48,14 @@ public class PositionService {
         log.debug("Position has been updated for trade '{}'", origTrade.getUniqueTag());
 
         printCurrentPositions();
+    }
+
+    public List<Position> getAllPositions() {
+        return new ArrayList<>(positionStore.values());
+    }
+
+    public Optional<Position> getPosition(String positionKey) {
+        return Optional.ofNullable(positionStore.get(positionKey));
     }
 
     private void printCurrentPositions() {
@@ -182,7 +192,7 @@ public class PositionService {
         }
     }
 
-    static class Position {
+    public static class Position {
         private String productId;
         private String currency;
         private BigDecimal quantity;
