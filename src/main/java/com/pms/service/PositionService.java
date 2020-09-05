@@ -21,13 +21,41 @@ public class PositionService {
 
     private final HashMap<String, Position> positionStore = new HashMap<>();
 
-    public void updatePosition(Trade trade) {
-        log.debug("Processing position update for trade '{}'", trade.getUniqueTag());
+    public void addTrade(Trade trade) {
+        log.debug("Processing addTrade for trade '{}'", trade.getUniqueTag());
 
         // Get position effects
         ArrayList<PositionEffect> positionEffects = getPositionEffects(trade);
+        ApplyPositionEffects(positionEffects);
 
-        for (PositionEffect positionEffect : positionEffects) {
+        log.debug("Position has been updated for trade '{}'", trade.getUniqueTag());
+        printCurrentPositions();
+    }
+
+    public void updateTrade(Trade origTrade, Trade updatedTrade) {
+        log.debug("Processing updateTrade for trade '{}'", origTrade.getUniqueTag());
+
+        // Reverse position effects
+        ArrayList<PositionEffect> origPositionEffects = reversePositionEffect(getPositionEffects(origTrade));
+        ApplyPositionEffects(origPositionEffects);
+
+        // Apply position effects
+        ArrayList<PositionEffect> newPositionEffects = getPositionEffects(updatedTrade);
+        ApplyPositionEffects(newPositionEffects);
+
+        log.debug("Position has been updated for trade '{}'", origTrade.getUniqueTag());
+
+        printCurrentPositions();
+    }
+
+    private void printCurrentPositions() {
+        for (Map.Entry<String, Position> positionEntry : positionStore.entrySet()) {
+            log.debug("Position key '{}', value '{}'", positionEntry.getKey(), positionEntry.getValue());
+        }
+    }
+
+    private void ApplyPositionEffects(ArrayList<PositionEffect> origPositionEffects) {
+        for (PositionEffect positionEffect : origPositionEffects) {
             String positionKey = positionEffect.getPositionKey();
             Position existingPosition = positionStore.get(positionKey);
             if (existingPosition == null) {
@@ -45,18 +73,18 @@ public class PositionService {
                 if (existingPositionAveragePrice != null) {
                     BigDecimal positionTotalValue = existingPositionAveragePrice.multiply(existingPositionQuantity);
                     BigDecimal newPositionQuantity = existingPositionQuantity.add(positionEffect.getSignedQuantity());
-                    existingPosition.setAveragePrice(
-                        positionTotalValue.divide(newPositionQuantity, new MathContext(6, RoundingMode.HALF_UP)
-                        )
-                    );
+
+                    if (newPositionQuantity.compareTo(BigDecimal.ZERO) == 0) {
+                        existingPosition.setAveragePrice(BigDecimal.ZERO);
+                    } else {
+                        existingPosition.setAveragePrice(
+                            positionTotalValue.divide(newPositionQuantity, new MathContext(6, RoundingMode.HALF_UP)
+                            )
+                        );
+                    }
                 }
                 existingPosition.setQuantity(existingPositionQuantity.add(positionEffect.getSignedQuantity()));
             }
-        }
-
-        log.debug("Position has been updated for trade '{}'", trade.getUniqueTag());
-        for (Map.Entry<String, Position> positionEntry : positionStore.entrySet()){
-            log.debug("Position key '{}', value '{}'", positionEntry.getKey(), positionEntry.getValue());
         }
     }
 
@@ -96,6 +124,13 @@ public class PositionService {
         versusCashPositionEffect.setCurrency(trade.getCurrency());
         positionEffects.add(versusCashPositionEffect);
 
+        return positionEffects;
+    }
+
+    private ArrayList<PositionEffect> reversePositionEffect( ArrayList<PositionEffect> positionEffects) {
+        for (PositionEffect positionEffect : positionEffects) {
+            positionEffect.setSignedQuantity(positionEffect.getSignedQuantity().negate());
+        }
         return positionEffects;
     }
 

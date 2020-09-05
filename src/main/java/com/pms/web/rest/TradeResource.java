@@ -8,7 +8,6 @@ import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,11 +36,11 @@ public class TradeResource {
 
     private final TradeRepository tradeRepository;
 
-    @Autowired
-    private PositionService positionService;
+    private final PositionService positionService;
 
-    public TradeResource(TradeRepository tradeRepository) {
+    public TradeResource(TradeRepository tradeRepository, PositionService positionService) {
         this.tradeRepository = tradeRepository;
+        this.positionService = positionService;
     }
 
     /**
@@ -59,7 +58,7 @@ public class TradeResource {
         }
         Trade result = tradeRepository.save(trade);
 
-        positionService.updatePosition(trade);
+        positionService.addTrade(trade);
 
         return ResponseEntity.created(new URI("/api/trades/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
@@ -73,14 +72,17 @@ public class TradeResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated trade,
      * or with status {@code 400 (Bad Request)} if the trade is not valid,
      * or with status {@code 500 (Internal Server Error)} if the trade couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/trades")
-    public ResponseEntity<Trade> updateTrade(@Valid @RequestBody Trade trade) throws URISyntaxException {
+    public ResponseEntity<Trade> updateTrade(@Valid @RequestBody Trade trade) {
         log.debug("REST request to update Trade : {}", trade);
         if (trade.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
+
+        Optional<Trade> originalTrade = tradeRepository.findById(trade.getId());
+        originalTrade.ifPresent(origTrade -> positionService.updateTrade(origTrade, trade));
+
         Trade result = tradeRepository.save(trade);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, trade.getId().toString()))
