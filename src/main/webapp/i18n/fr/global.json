@@ -13,6 +13,11 @@
         "trade": "Trade",
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
       },
+      "views": {
+        "main": "Views",
+        "position": "Position",
+        "trade": "Trade"
+      },
       "account": {
         "main": "Compte",
         "settings": "Profil",

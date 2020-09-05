@@ -13,6 +13,11 @@
         "trade": "Trade",
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
       },
+      "views": {
+        "main": "查看数据",
+        "position": "仓位",
+        "trade": "交易"
+      },
       "account": {
         "main": "账号",
         "settings": "设置",
