@@ -6,6 +6,7 @@ import authentication, { AuthenticationState } from './authentication';
 import applicationProfile, { ApplicationProfileState } from './application-profile';
 
 import administration, { AdministrationState } from 'app/modules/administration/administration.reducer';
+import view, { ViewState } from 'app/modules/view/view.reducer';
 import userManagement, { UserManagementState } from 'app/modules/administration/user-management/user-management.reducer';
 import register, { RegisterState } from 'app/modules/account/register/register.reducer';
 import activate, { ActivateState } from 'app/modules/account/activate/activate.reducer';
@@ -35,6 +36,7 @@ export interface IRootState {
   readonly locale: LocaleState;
   readonly applicationProfile: ApplicationProfileState;
   readonly administration: AdministrationState;
+  readonly view: ViewState;
   readonly userManagement: UserManagementState;
   readonly register: RegisterState;
   readonly activate: ActivateState;
@@ -54,6 +56,7 @@ const rootReducer = combineReducers<IRootState>({
   locale,
   applicationProfile,
   administration,
+  view,
   userManagement,
   register,
   activate,

@@ -1,46 +1,63 @@
-import React, {useEffect} from 'react';
-import {connect} from 'react-redux';
+import React from 'react';
+import { Translate } from 'react-jhipster';
+import { connect } from 'react-redux';
 
-import {IRootState} from 'app/shared/reducers';
-import {getSession} from 'app/shared/reducers/authentication';
-import {saveAccountSettings, reset} from '../../account/settings/settings.reducer';
-
-export interface IUserSettingsProps extends StateProps, DispatchProps {
+export interface IPositionViewProps {
+  positions: any[];
 }
 
-export const PositionViewPage = (props: IUserSettingsProps) => {
-  useEffect(() => {
-    props.getSession();
-    return () => {
-      props.reset();
-    };
-  }, []);
-
-  const handleValidSubmit = (event, values) => {
-    const account = {
-      ...props.account,
-      ...values,
-    };
-
-    props.saveAccountSettings(account);
-    event.persist();
-  };
-
+export const PositionViewPage = ({ positions }: IPositionViewProps) => {
   return (
     <div>
       <h2>Position View</h2>
+      <table className="table table-sm table-striped table-bordered">
+        <thead>
+        <tr>
+          <th>
+            <span>
+              Account
+            </span>
+          </th>
+          <th>
+            <span>
+              Product
+            </span>
+        </th>
+          <th>
+            <span>
+              Currency
+            </span>
+          </th>
+          <th>
+            <span>
+              Quantity
+            </span>
+          </th>
+          <th>
+            <span>
+              Price
+            </span>
+          </th>
+        </tr>
+        </thead>
+        <tbody>
+        {positions.map((position, i) => (
+          <tr key={`log-row-${i}`}>
+            <td>{position.account}</td>
+            <td>{position.productId}</td>
+            <td>{position.currency}</td>
+            <td>{position.averagePrice}</td>
+            <td>{position.quantity}</td>
+          </tr>
+        ))}
+        </tbody>
+      </table>
     </div>
   );
 };
 
-const mapStateToProps = ({authentication}: IRootState) => ({
-  account: authentication.account,
-  isAuthenticated: authentication.isAuthenticated,
+const mapStateToProps = ({ view }) => ({
+  positions: view.positions.data,
 });
 
-const mapDispatchToProps = {getSession, saveAccountSettings, reset};
-
-type StateProps = ReturnType<typeof mapStateToProps>;
-type DispatchProps = typeof mapDispatchToProps;
-
-export default connect(mapStateToProps, mapDispatchToProps)(PositionViewPage);
+export default connect(mapStateToProps)(PositionViewPage);
