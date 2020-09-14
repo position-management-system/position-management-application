@@ -7,11 +7,20 @@ import java.math.BigDecimal;
  */
 public class PositionDTO {
 
+    private String id;
     private String account;
     private String productId;
     private String currency;
     private BigDecimal quantity;
     private BigDecimal averagePrice;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getAccount() {
         return account;
@@ -61,6 +70,7 @@ public class PositionDTO {
             ", currency='" + currency + '\'' +
             ", quantity=" + quantity +
             ", averagePrice=" + averagePrice +
+            ", id=" + id +
             '}';
     }
 }

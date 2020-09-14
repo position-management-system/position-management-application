@@ -23,9 +23,9 @@ public class PositionWebSocketService {
 
     private final SimpMessageSendingOperations messagingTemplate;
 
-    private List<String> productIds = Arrays.asList("VOD.L", "BP.L", "BT.L", "RR.L");
-    private List<String> accounts = Arrays.asList("Account1", "Account2");
-    private List<String> currencies = Arrays.asList("EUR", "USD", "GBP");
+    private List<String> productIds = Arrays.asList("VOD.L", "BP.L", "RR.L");
+    private List<String> accounts = Arrays.asList("Account 1", "Account 2");
+    private List<String> currencies = Arrays.asList("EUR", "GBP");
 
     public PositionWebSocketService(SimpMessageSendingOperations messagingTemplate) {
         this.messagingTemplate = messagingTemplate;
@@ -36,9 +36,14 @@ public class PositionWebSocketService {
     public void sendPositions() {
         Random random = new Random();
         PositionDTO positionDTO = new PositionDTO();
-        positionDTO.setAccount(accounts.get(random.nextInt(accounts.size())));
-        positionDTO.setProductId(productIds.get(random.nextInt(productIds.size())));
-        positionDTO.setCurrency(currencies.get(random.nextInt(currencies.size())));
+        String account = accounts.get(random.nextInt(accounts.size()));
+        String productId = productIds.get(random.nextInt(productIds.size()));
+        String currency = currencies.get(random.nextInt(currencies.size()));
+        String id = account + productId + currency;
+        positionDTO.setId(id);
+        positionDTO.setAccount(account);
+        positionDTO.setProductId(productId);
+        positionDTO.setCurrency(currency);
         positionDTO.setQuantity(BigDecimal.valueOf(random.nextInt(100)));
         positionDTO.setAveragePrice(BigDecimal.valueOf(random.nextDouble() * 100).setScale(6, RoundingMode.HALF_UP));
 
