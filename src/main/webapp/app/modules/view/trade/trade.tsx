@@ -6,6 +6,7 @@ import { getEntities } from "app/entities/trade/trade.reducer";
 import { AgGridReact } from 'ag-grid-react';
 import { GridOptions } from 'ag-grid-community';
 import { ITrade } from "app/shared/model/trade.model";
+import moment from 'moment';
 
 export interface ITradeProps extends StateProps, DispatchProps {
   tradeList: ITrade[];
@@ -16,12 +17,17 @@ export const TradeViewPage = (props: ITradeProps) => {
     props.getEntities();
   }, []);
 
-  const { tradeList, loading } = props;
+  const { tradeList } = props;
 
   const gridOptions: GridOptions = {
     columnDefs: [
       { field: 'uniqueTag', sort: 'desc' },
-      { field: 'tradeDate' },
+      {
+        field: 'tradeDate',
+        cellRenderer(data) {
+          return moment(data.value).format('YYYY-MM-DD HH:mm:ss');
+        }
+      },
       { field: 'side' },
       { field: 'quantity' },
       { field: 'productId' },
