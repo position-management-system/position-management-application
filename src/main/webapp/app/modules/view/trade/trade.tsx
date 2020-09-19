@@ -1,44 +1,69 @@
-import React, {useEffect} from 'react';
-import {connect} from 'react-redux';
+import React, { useEffect } from 'react';
+import { connect } from 'react-redux';
 
-import {IRootState} from 'app/shared/reducers';
-import {getSession} from 'app/shared/reducers/authentication';
-import {saveAccountSettings, reset} from '../../account/settings/settings.reducer';
+import { IRootState } from 'app/shared/reducers';
+import { getEntities } from "app/entities/trade/trade.reducer";
+import { AgGridReact } from 'ag-grid-react';
+import { GridOptions } from 'ag-grid-community';
+import { ITrade } from "app/shared/model/trade.model";
 
-export interface IUserSettingsProps extends StateProps, DispatchProps {
+export interface ITradeProps extends StateProps, DispatchProps {
+  tradeList: ITrade[];
 }
 
-export const TradeViewPage = (props: IUserSettingsProps) => {
+export const TradeViewPage = (props: ITradeProps) => {
   useEffect(() => {
-    props.getSession();
-    return () => {
-      props.reset();
-    };
+    props.getEntities();
   }, []);
 
-  const handleValidSubmit = (event, values) => {
-    const account = {
-      ...props.account,
-      ...values,
-    };
+  const { tradeList, loading } = props;
 
-    props.saveAccountSettings(account);
-    event.persist();
+  const gridOptions: GridOptions = {
+    columnDefs: [
+      { field: 'uniqueTag', sort: 'desc' },
+      { field: 'tradeDate' },
+      { field: 'side' },
+      { field: 'quantity' },
+      { field: 'productId' },
+      { field: 'price' },
+      { field: 'currency' },
+      { field: 'primaryAccount' },
+      { field: 'versusAccount' },
+      { field: 'trader' },
+    ],
+    defaultColDef: {
+      flex: 1,
+      width: 170,
+      sortable: true,
+      filter: true,
+      resizable: true,
+      enableCellChangeFlash: true,
+    },
+    multiSortKey: 'ctrl',
+    rowData: tradeList,
   };
 
   return (
     <div>
       <h2>Trade View</h2>
+      <div className="ag-theme-alpine" style={{ height: '600px', width: '100%' }}>
+        <AgGridReact
+          rowData={gridOptions.rowData}
+          columnDefs={gridOptions.columnDefs}
+          defaultColDef={gridOptions.defaultColDef}
+          multiSortKey={gridOptions.multiSortKey}
+        />
+      </div>
     </div>
   );
 };
 
-const mapStateToProps = ({authentication}: IRootState) => ({
-  account: authentication.account,
-  isAuthenticated: authentication.isAuthenticated,
+const mapStateToProps = ({ trade }: IRootState) => ({
+  tradeList: trade.entities,
+  loading: trade.loading,
 });
 
-const mapDispatchToProps = {getSession, saveAccountSettings, reset};
+const mapDispatchToProps = { getEntities };
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = typeof mapDispatchToProps;
